@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONOLAB  Microbiologie created by SOHAIB CHEKRI</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;color:#333;}
+.container{max-width:900px;margin:0 auto;background:rgba(255,255,255,0.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+h1{text-align:center;color:#333;margin-bottom:10px;font-size:2em;}
+.date-header{text-align:center;color:#666;margin-bottom:20px;font-size:18px;}
+.section-title{margin-top:30px;margin-bottom:10px;font-weight:600;font-size:18px;}
+.input-section{display:flex;gap:10px;margin-bottom:20px;}
+#taskInput{flex:1;padding:15px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;transition:border-color 0.3s;}
+#taskInput:focus{outline:none;border-color:#667eea;}
+.btn{padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-size:16px;font-weight:600;transition:all 0.3s;}
+.btn-add{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;}
+.btn-add:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4);}
+.task-list,.planning-list,.archive-list{display:flex;flex-direction:column;gap:15px;}
+.task-item,.planning-item,.archive-item{background:#f8f9fa;border-radius:15px;padding:15px;display:flex;align-items:center;gap:10px;border-left:5px solid #667eea;transition:all 0.3s;}
+.task-item:hover,.planning-item:hover,.archive-item:hover{transform:translateX(5px);box-shadow:0 5px 20px rgba(0,0,0,0.1);}
+.task-name{flex:1;font-size:16px;font-weight:500;}
+.timer-display{font-size:20px;font-weight:bold;color:#667eea;font-family:'Courier New',monospace;min-width:80px;text-align:center;}
+.timer-display.running{color:#e74c3c;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+.btn-timer{padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:600;transition:all 0.3s;}
+.btn-start{background:#27ae60;color:white;}
+.btn-start:hover{background:#229954;}
+.btn-stop{background:#e74c3c;color:white;}
+.btn-stop:hover{background:#c0392b;}
+.btn-reset{background:#f39c12;color:white;}
+.btn-reset:hover{background:#e67e22;}
+.btn-delete{background:#95a5a6;color:white;}
+.btn-delete:hover{background:#7f8c8d;}
+.btn-edit{background:#5dade2;color:white;}
+.btn-edit:hover{background:#3498db;}
+.btn-archive{background:#8e44ad;color:white;}
+.btn-archive:hover{background:#71368a;}
+.summary{margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:15px;color:white;text-align:center;}
+.total-time{font-size:28px;font-weight:bold;margin-top:10px;}
+.export-section{margin-top:20px;display:flex;gap:10px;justify-content:center;}
+.btn-export{background:#34495e;color:white;}
+.btn-export:hover{background:#2c3e50;}
+.footer{margin-top:30px;text-align:center;padding-top:20px;border-top:2px solid #e0e0e0;color:#666;font-size:14px;}
+.footer strong{color:#667eea;font-weight:600;}
+
+/* Responsive pour smartphone */
+@media (max-width: 600px) {
+    .container {padding:15px;}
+    h1 {font-size:1.5em;}
+    .input-section {flex-direction:column;gap:10px;}
+    #taskInput {width:100%;}
+    .btn {width:100%;font-size:14px;padding:10px;}
+    .task-item,.planning-item,.archive-item {flex-direction:column;align-items:flex-start;gap:5px;}
+    .timer-display {min-width:auto;text-align:left;}
+    .btn-timer,.btn-edit,.btn-delete,.btn-archive {width:100%;margin-top:5px;}
+    .export-section {flex-direction:column;gap:10px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>ChronoLab  Microbiologie</h1>
+    <div class="date-header" id="currentDate"></div>
+
+    <!-- Planning -->
+    <div class="section-title"> Planning</div>
+    <div id="planningList" class="planning-list"></div>
+
+    <!-- Ce jour -->
+    <div class="section-title"> Ce jour</div>
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Nouvelle tache..." onkeypress="if(event.key==='Enter') addTask()">
+        <button class="btn btn-add" onclick="addTask()">+ Ajouter</button>
+    </div>
+    <div id="todayList" class="task-list"></div>
+
+    <!-- Archives -->
+    <div class="section-title">Archives</div>
+    <div id="archiveList" class="archive-list"></div>
+
+    <div class="summary">
+        <div>Temps total journalier</div>
+        <div class="total-time" id="totalTime">00:00</div>
+    </div>
+
+    <div class="export-section">
+        <button class="btn btn-export" onclick="exportCSV()"> Export EXCEL</button>
+        <button class="btn btn-export" onclick="exportPDF()"> Export PDF</button>
+    </div>
+
+    <div class="footer">Created by <strong>SOHAIB CHEKRI</strong> |  2026</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+let todayTasks = JSON.parse(localStorage.getItem('todayTasks')||'[]');
+let planning = JSON.parse(localStorage.getItem('planning')||'[]');
+let archives = JSON.parse(localStorage.getItem('archives')||'[]');
+let timers = {};
+
+function formatDate(d){
+    return d.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+function save(){
+    localStorage.setItem('todayTasks',JSON.stringify(todayTasks));
+    localStorage.setItem('planning',JSON.stringify(planning));
+    localStorage.setItem('archives',JSON.stringify(archives));
+}
+
+function syncPlanningToToday(){
+    planning.forEach(p=>{
+        if(!todayTasks.some(t=>t.name===p.name)){
+            todayTasks.push({name:p.name,elapsed:0,running:false,startTime:null});
+        }
+    });
+    save();
+}
+
+function render(){
+    // Planning
+    document.getElementById('planningList').innerHTML = planning.map((t,i)=>`
+        <div class="planning-item">
+            <div class="task-name">${t.name}</div>
+            <button class="btn-edit" onclick="editPlanning(${i})"> Modifier</button>
+            <button class="btn-delete" onclick="planning.splice(${i},1);syncPlanningToToday();save();render()">Supprimer</button>
+        </div>
+    `).join('');
+
+    // Aujourd’hui
+    document.getElementById('todayList').innerHTML = todayTasks.map((t,i)=>`
+        <div class="task-item">
+            <div class="task-name">${t.name}</div>
+            <div class="timer-display ${t.running?'running':''}" id="time-${i}">${formatTime(t.elapsed)}</div>
+            <button class="btn-timer ${t.running?'btn-stop':'btn-start'}" onclick="toggleTimer(${i})">${t.running?' Stop':' Start'}</button>
+            <button class="btn-timer btn-reset" onclick="resetTimer(${i})"> Reset</button>
+            <button class="btn-edit" onclick="editTask(${i})"> Modifier</button>
+            <button class="btn-archive" onclick="archiveTask(${i})">Archiver</button>
+            <button class="btn-delete" onclick="deleteTask(${i})"></button>
+        </div>
+    `).join('');
+
+    // Archives
+    document.getElementById('archiveList').innerHTML = archives.map((a,i)=>`
+        <div class="archive-item">
+            <div class="task-name">${a.name} - ${formatDate(new Date(a.date))} (${formatTime(a.elapsed)})</div>
+            <button class="btn-edit" onclick="editArchive(${i})"> Modifier</button>
+            <button class="btn-delete" onclick="archives.splice(${i},1);save();render()"> Supprimer</button>
+        </div>
+    `).join('');
+
+    updateTotalOnly();
+}
+
+// Chronomètre stable
+function formatTime(s){
+    const m=Math.floor(s/60);
+    const sec=s%60;
+    return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+}
+
+function toggleTimer(i){
+    let t=todayTasks[i];
+    if(t.running){
+        t.running=false;
+        t.elapsed += Math.floor((Date.now()-t.startTime)/1000);
+        clearInterval(timers[i]);
+        delete timers[i];
+        save();
+        document.getElementById(`time-${i}`).textContent=formatTime(t.elapsed);
+    } else {
+        t.running=true;
+        t.startTime=Date.now();
+        timers[i]=setInterval(()=>{
+            const current=t.elapsed + Math.floor((Date.now()-t.startTime)/1000);
+            document.getElementById(`time-${i}`).textContent=formatTime(current);
+            updateTotalOnly();
+        },1000);
+    }
+    save();
+}
+
+function resetTimer(i){
+    let t=todayTasks[i];
+    if(t.running){clearInterval(timers[i]);delete timers[i];}
+    t.elapsed=0; t.running=false; t.startTime=null;
+    save();
+    document.getElementById(`time-${i}`).textContent=formatTime(t.elapsed);
+    updateTotalOnly();
+}
+
+function updateTotalOnly(){
+    let total=0;
+    todayTasks.forEach(t=>{total+=t.elapsed+(t.running?Math.floor((Date.now()-t.startTime)/1000):0);});
+    document.getElementById('totalTime').textContent=formatTime(total);
+}
+
+// Gestion tâches
+function addTask(){let n=document.getElementById('taskInput').value.trim();if(!n)return;todayTasks.push({name:n,elapsed:0,running:false,startTime:null});document.getElementById('taskInput').value='';syncPlanningToToday();save();render();}
+function deleteTask(i){if(todayTasks[i].running){clearInterval(timers[i]);delete timers[i];}todayTasks.splice(i,1);save();render();}
+function editTask(i){let n=prompt('Modifier le nom de la tâche',todayTasks[i].name);if(n){todayTasks[i].name=n;syncPlanningToToday();save();render();}}
+function archiveTask(i){archives.push({...todayTasks[i],date:Date.now()});save();render();}
+
+// Modifier planning et archives
+function editPlanning(i){let n=prompt('Modifier le nom de la tâche',planning[i].name);if(n){planning[i].name=n;syncPlanningToToday();save();render();}}
+function editArchive(i){let n=prompt('Modifier le nom de la tâche',archives[i].name);if(n){archives[i].name=n;save();render();}}
+
+// Export CSV
+function exportCSV(){
+    if(todayTasks.length===0){alert('Aucune tâche à exporter');return;}
+    let csv='Date,Tâche,Durée (minutes),Durée (HH:MM)\n';
+    const date=formatDate(new Date());
+    todayTasks.forEach(t=>{const s=t.elapsed+(t.running?Math.floor((Date.now()-t.startTime)/1000):0);csv+=`${date},"${t.name}",${Math.ceil(s/60)},${formatTime(s)}\n`;});
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=`chrono-lab-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+}
+
+// Export PDF
+function exportPDF(){
+    if(todayTasks.length===0){alert('Aucune tâche à exporter');return;}
+    const { jsPDF } = window.jspdf;
+    const doc=new jsPDF();
+    doc.setFontSize(16);doc.text("ChronoLab Microbiologie",10,10);
+    doc.setFontSize(12);doc.text("Date: "+formatDate(new Date()),10,20);
+    let y=30;
+    todayTasks.forEach(t=>{
+        const s=t.elapsed+(t.running?Math.floor((Date.now()-t.startTime)/1000):0);
+        doc.text(`- ${t.name} : ${formatTime(s)}`,10,y);
+        y+=10;
+    });
+    doc.save(`chrono-lab-${new Date().toISOString().split('T')[0]}.pdf`);
+}
+
+// Date actuelle
+document.getElementById('currentDate').textContent=formatDate(new Date());
+syncPlanningToToday();
+render();
+</script>
+</body>
+</html>

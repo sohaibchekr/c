@@ -1,0 +1,9 @@
+{
+  "name": "ChronoLab",
+  "short_name": "ChronoLab",
+  "description": "Gestion et chronométrage des tâches en microbiologie",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd"
+}
