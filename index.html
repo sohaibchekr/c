@@ -7,65 +7,56 @@
     <style>
         :root { --primary: #667eea; --secondary: #764ba2; --success: #27ae60; --danger: #e74c3c; --warning: #f39c12; --info: #3498db; }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-        
         body { font-family:'Segoe UI', sans-serif; background: linear-gradient(135deg, var(--primary), var(--secondary)); min-height: 100vh; padding: 10px; color: #333; }
-        
         .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; padding: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        h2 { text-align:center; margin-bottom:15px; font-size: 1.6rem; color: #2c3e50; }
         
-        h2 { text-align:center; margin-bottom:15px; font-size: 1.5rem; }
-
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #f0f0f0; padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; background: transparent; font-size: 0.9rem; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f0f0f0; padding: 5px; border-radius: 15px; }
+        .tab-btn { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; background: transparent; font-size: 1rem; }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Adaptabilité Mobile du formulaire */
         .input-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 16px; }
+        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; appearance: none; }
+        input[type="text"]:focus { border-color: var(--primary); background: #f9f9ff; }
         
-        .search-wrapper { margin-bottom: 15px; }
-        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 14px; background: #fdfdfd; }
+        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; font-size: 14px; background: #fafafa; }
 
-        /* Cartes pour mobile */
+        .btn-add-main { background: var(--success); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+
         .task-item, .archive-item { 
-            padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px;
-            display: flex; flex-direction: column; gap: 10px; background: #fff;
+            padding: 18px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 12px;
+            display: flex; flex-direction: column; gap: 12px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        .task-info-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .task-name { font-weight: 600; font-size: 1.1rem; color: #2c3e50; }
-        .timer-display { font-family: monospace; font-size: 1.6rem; font-weight: bold; color: var(--primary); text-align: center; }
+        .task-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .task-name { font-weight: bold; font-size: 1.1rem; color: #34495e; flex: 1; text-transform: uppercase; }
+        .timer-display { font-family: 'Courier New', monospace; font-size: 1.8rem; font-weight: 800; color: var(--primary); text-align: center; }
 
-        /* Groupe de boutons adapté au pouce */
-        .btn-group { display: flex; gap: 8px; width: 100%; }
-        .btn { flex: 1; padding: 12px 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         
         .btn-start { background: var(--success); }
         .btn-stop { background: var(--danger); }
         .btn-reset { background: var(--warning); }
         .btn-archive { background: var(--secondary); }
-        .btn-delete { background: #bdc3c7; }
+        .btn-delete { background: #eaeff2; color: #7f8c8d; }
+
+        .day-header { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
         
-        .btn-add-main { background: var(--success); width: 100%; padding: 15px; font-size: 1rem; }
+        .total-box { margin-top: 20px; padding: 20px; background: #f4f7fe; border-radius: 15px; text-align: center; border: 2px dashed var(--primary); }
+        .total-val { font-size: 2.5rem; font-weight: 900; color: var(--primary); }
 
-        .day-group { margin-bottom: 20px; border: 1px solid #eee; border-radius: 15px; overflow: hidden; background: #fff; }
-        .day-header { background: #f8f9fa; padding: 12px 15px; border-bottom: 2px solid var(--primary); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        
-        .total-box { margin-top: 20px; padding: 15px; background: #f4f7fe; border-radius: 15px; text-align: center; border: 2px dashed var(--primary); }
-        .total-val { font-size: 2.2em; font-weight: bold; color: var(--primary); }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #7f8c8d; padding-bottom: 20px; }
+        .signature { color: var(--primary); font-weight: bold; display: block; margin-top: 8px; }
 
-        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #777; padding-bottom: 20px; }
-        .signature { color: var(--primary); font-weight: bold; display: block; margin-top: 5px; font-size: 14px; }
-
-        /* Desktop Adjustments */
         @media (min-width: 600px) {
             .input-section { flex-direction: row; }
-            .task-item { flex-direction: row; }
+            .task-item { flex-direction: row; align-items: center; }
             .btn-group { width: auto; }
-            .btn { flex: none; width: 45px; }
-            .btn-add-main { width: auto; }
+            .btn { width: 50px; flex: none; }
         }
     </style>
 </head>
@@ -82,24 +73,20 @@
     <div id="chrono" class="tab-content active">
         <div class="input-section">
             <input type="text" id="taskInput" placeholder="Nouvelle manipulation...">
-            <button class="btn btn-add-main" onclick="addTask()">+ Ajouter</button>
+            <button class="btn-add-main" onclick="addTask()">+ Ajouter</button>
         </div>
-        <div class="search-wrapper">
-            <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos..." onkeyup="render()">
-        </div>
+        <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos en cours..." oninput="render()">
         <div id="todayList"></div>
         <div class="total-box">
-            <div style="font-weight: bold; color: #666; font-size: 0.9rem;">TOTAL AUJOURD'HUI</div>
+            <div style="font-weight: bold; margin-bottom: 5px;">TEMPS TOTAL</div>
             <div class="total-val" id="grandTotal">00:00</div>
         </div>
     </div>
 
     <div id="archives" class="tab-content">
-        <div class="search-wrapper">
-            <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher (nom ou date)..." onkeyup="render()">
-        </div>
+        <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..." oninput="filterArchives()">
         <div id="archiveContainer"></div>
-        <button class="btn btn-export-all" style="background: #2c3e50; width: 100%; padding: 15px; margin-top: 10px;" onclick="exportFullPDF()">📄 EXPORTER TOUT L'HISTORIQUE (PDF)</button>
+        <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;" onclick="exportFullPDF()">📄 EXPORTER RAPPORT COMPLET (PDF)</button>
     </div>
 
     <div class="footer">
@@ -124,13 +111,14 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(event) event.currentTarget.classList.add('active');
-        render();
+        if(id === 'archives') filterArchives(); 
+        else render();
     }
 
     function addTask() {
         const val = document.getElementById('taskInput').value.trim();
         if(!val) return;
-        tasks.push({ id: Date.now(), name: val.toUpperCase(), elapsed: 0, running: false });
+        tasks.push({ id: Date.now(), name: val, elapsed: 0, running: false });
         document.getElementById('taskInput').value = '';
         save(); render();
     }
@@ -155,28 +143,27 @@
         save(); render();
     }
 
-    function resetTimer(id) {
-        if(!confirm("Réinitialiser ce chrono ?")) return;
-        const t = tasks.find(x => x.id === id);
-        if(t && t.running) { clearInterval(timers[id]); t.running = false; }
-        if(t) t.elapsed = 0;
-        save(); render();
-    }
-
+    // MODIFICATION : LA TACHE RESTE AFFICHÉE (PAS DE FILTER)
     function archiveTask(id) {
         const t = tasks.find(x => x.id === id);
         if(!t) return;
         const finalSec = t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
         const now = new Date();
         archives.unshift({
-            id: Date.now() + Math.random(),
+            id: Date.now(),
             name: t.name,
             elapsed: finalSec,
             date: now.toLocaleDateString('fr-FR'),
             time: now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})
         });
-        save(); render();
-        alert("Envoyé aux archives !");
+        
+        // Signal visuel rapide sur le bouton pour confirmer l'action
+        const btn = event.currentTarget;
+        btn.style.background = "#27ae60";
+        setTimeout(() => { btn.style.background = ""; }, 500);
+
+        save();
+        // On ne supprime plus la tâche de la liste ici
     }
 
     function formatTime(s) {
@@ -197,14 +184,14 @@
     }
 
     function render() {
-        const searchChrono = document.getElementById('searchChrono').value.toLowerCase();
-        const filteredTasks = tasks.filter(t => t.name.toLowerCase().includes(searchChrono));
+        const query = document.getElementById('searchChrono').value.toLowerCase();
+        const filtered = tasks.filter(t => t.name.toLowerCase().includes(query));
         
-        document.getElementById('todayList').innerHTML = filteredTasks.map(t => `
+        document.getElementById('todayList').innerHTML = filtered.map(t => `
             <div class="task-item">
-                <div class="task-info-row">
+                <div class="task-header">
                     <div class="task-name">${t.name}</div>
-                    <button class="btn btn-delete" style="flex:none; width:35px; height:35px; padding:0;" onclick="deleteTask(${t.id})">✕</button>
+                    <button class="btn-delete" style="border:none; background:none; font-size:1.2rem;" onclick="deleteTask(${t.id})">✕</button>
                 </div>
                 <div class="timer-display" id="time-${t.id}">${formatTime(t.elapsed)}</div>
                 <div class="btn-group">
@@ -213,64 +200,66 @@
                     <button class="btn btn-archive" onclick="archiveTask(${t.id})">📂</button>
                 </div>
             </div>
-        `).join('') || '<p style="text-align:center; padding:10px; color:#999;">Aucun chrono en cours.</p>';
+        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun chrono trouvé.</p>';
+        updateGrandTotal();
+    }
 
-        const searchArch = document.getElementById('searchArch').value.toLowerCase();
-        const filteredArch = archives.filter(a => 
-            (a.name && a.name.toLowerCase().includes(searchArch)) || 
-            (a.date && a.date.includes(searchArch))
+    // RECHERCHE AMÉLIORÉE (SENSITIVE)
+    function filterArchives() {
+        const searchInput = document.getElementById('searchArch');
+        const query = searchInput.value.toLowerCase().trim();
+        const container = document.getElementById('archiveContainer');
+        
+        const filtered = archives.filter(a => 
+            a.name.toLowerCase().includes(query) || (a.date && a.date.includes(query))
         );
-
-        const groups = filteredArch.reduce((acc, a) => {
+        
+        const groups = filtered.reduce((acc, a) => {
             const day = a.date || "Inconnu";
             if(!acc[day]) acc[day] = [];
             acc[day].push(a);
             return acc;
         }, {});
 
-        document.getElementById('archiveContainer').innerHTML = Object.keys(groups).map(day => `
-            <div class="day-group">
+        container.innerHTML = Object.keys(groups).map(day => `
+            <div style="margin-bottom:20px;">
                 <div class="day-header">
                     <span>🗓 ${day}</span>
-                    <button class="btn btn-info" style="font-size:10px; padding:5px 10px;" onclick="exportDayPDF('${day}')">PDF</button>
+                    <button onclick="exportDayPDF('${day}')" style="border:none; background:#ddd; padding:4px 8px; border-radius:5px; font-size:10px;">PDF</button>
                 </div>
                 ${groups[day].map(a => `
                     <div class="archive-item">
-                        <div class="task-info-row">
-                            <div class="task-name">${a.name} <br><small style="color:#888; font-weight:normal;">à ${a.time || ''}</small></div>
-                            <div class="timer-display" style="font-size:1.2rem;">${formatTime(a.elapsed)}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="task-name" style="font-size:1rem;">${a.name}</div>
+                            <div style="font-weight:bold; color:var(--primary);">${formatTime(a.elapsed)}</div>
                         </div>
-                        <button class="btn btn-delete" style="width:100%; padding:8px; font-size:0.9rem;" onclick="deleteArch(${a.id})">Supprimer l'archive</button>
+                        <button class="btn-delete" style="width:100%; padding:8px; border-radius:8px; border:1px solid #eee; font-size:0.8rem;" onclick="deleteArch(${a.id})">Supprimer l'archive</button>
                     </div>
                 `).join('')}
             </div>
-        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucune archive.</p>';
-        
-        updateGrandTotal();
+        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
     }
 
-    function deleteTask(id) {
-        if(confirm("Supprimer ce chrono ?")) {
-            tasks = tasks.filter(x => x.id !== id);
-            save(); render();
-        }
-    }
-
-    function deleteArch(id) {
-        if(confirm("Supprimer définitivement ?")) {
-            archives = archives.filter(x => x.id !== id);
-            save(); render();
-        }
+    function deleteTask(id) { if(confirm("Supprimer ce chrono ?")) { tasks = tasks.filter(x => x.id !== id); save(); render(); } }
+    function deleteArch(id) { if(confirm("Supprimer définitivement cette archive ?")) { archives = archives.filter(x => x.id !== id); save(); filterArchives(); } }
+    
+    // RESET SANS CONFIRMATION
+    function resetTimer(id) { 
+        const t = tasks.find(x => x.id === id); 
+        if(t) { 
+            t.elapsed = 0; 
+            if(t.running) { clearInterval(timers[id]); t.running = false; } 
+            save(); render(); 
+        } 
     }
 
     function exportDayPDF(day) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const data = archives.filter(a => a.date === day);
-        doc.text(`RAPPORT CHRONOLAB - ${day}`, 10, 20);
-        let y = 40;
-        data.forEach((a, i) => {
-            doc.text(`${i+1}. [${a.time}] ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
+        doc.text(`CHRONOLAB - Rapport du ${day}`, 15, 20);
+        let y = 35;
+        archives.filter(a => a.date === day).forEach((a, i) => {
+            doc.text(`${i+1}. ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
             y += 10;
         });
         doc.save(`ChronoLab_${day}.pdf`);
@@ -279,10 +268,10 @@
     function exportFullPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("RAPPORT CHRONOLAB COMPLET", 10, 20);
-        let y = 40;
-        archives.forEach((a) => {
-            doc.text(`[${a.date} ${a.time}] ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
+        doc.text("CHRONOLAB - RAPPORT COMPLET", 15, 20);
+        let y = 35;
+        archives.forEach(a => {
+            doc.text(`${a.date} | ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
             y += 10;
             if(y > 280) { doc.addPage(); y = 20; }
         });
