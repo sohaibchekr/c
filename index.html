@@ -22,7 +22,9 @@
         input[type="text"] { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; appearance: none; }
         input[type="text"]:focus { border-color: var(--primary); background: #f9f9ff; }
         
-        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; font-size: 14px; background: #fafafa; }
+        /* Barre de recherche optimisée mobile */
+        .search-bar { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; margin-bottom: 15px; font-size: 16px; background: #fff; transition: 0.2s; }
+        .search-bar:focus { border-color: var(--secondary); background: #fff; }
 
         .btn-add-main { background: var(--success); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
 
@@ -66,8 +68,8 @@
     <h2>ChronoLab ⏱</h2>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('chrono', event)">⏱ Chronos</button>
-        <button class="tab-btn" onclick="openTab('archives', event)">🗃 Archives</button>
+        <button class="tab-btn active" id="tabChrono" onclick="openTab('chrono', event)">⏱ Chronos</button>
+        <button class="tab-btn" id="tabArch" onclick="openTab('archives', event)">🗃 Archives</button>
     </div>
 
     <div id="chrono" class="tab-content active">
@@ -75,8 +77,10 @@
             <input type="text" id="taskInput" placeholder="Nouvelle manipulation...">
             <button class="btn-add-main" onclick="addTask()">+ Ajouter</button>
         </div>
-        <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos en cours..." oninput="render()">
+        <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos..." oninput="render()">
+        
         <div id="todayList"></div>
+        
         <div class="total-box">
             <div style="font-weight: bold; margin-bottom: 5px;">TEMPS TOTAL</div>
             <div class="total-val" id="grandTotal">00:00</div>
@@ -84,7 +88,8 @@
     </div>
 
     <div id="archives" class="tab-content">
-        <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..." oninput="filterArchives()">
+        <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher (nom, date, mot...)" oninput="filterArchives()">
+        
         <div id="archiveContainer"></div>
         <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;" onclick="exportFullPDF()">📄 EXPORTER RAPPORT COMPLET (PDF)</button>
     </div>
@@ -111,8 +116,12 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(event) event.currentTarget.classList.add('active');
-        if(id === 'archives') filterArchives(); 
-        else render();
+        
+        if(id === 'archives') {
+            filterArchives();
+        } else {
+            render();
+        }
     }
 
     function addTask() {
@@ -143,12 +152,12 @@
         save(); render();
     }
 
-    // MODIFICATION : LA TACHE RESTE AFFICHÉE (PAS DE FILTER)
     function archiveTask(id) {
         const t = tasks.find(x => x.id === id);
         if(!t) return;
         const finalSec = t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
         const now = new Date();
+        
         archives.unshift({
             id: Date.now(),
             name: t.name,
@@ -157,13 +166,16 @@
             time: now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})
         });
         
-        // Signal visuel rapide sur le bouton pour confirmer l'action
-        const btn = event.currentTarget;
-        btn.style.background = "#27ae60";
-        setTimeout(() => { btn.style.background = ""; }, 500);
+        // Petit effet visuel sur le bouton
+        const btn = window.event ? window.event.currentTarget : null;
+        if(btn) {
+            const oldBg = btn.style.background;
+            btn.style.background = "#27ae60";
+            setTimeout(() => { btn.style.background = oldBg; }, 500);
+        }
 
         save();
-        // On ne supprime plus la tâche de la liste ici
+        // Tâche maintenue dans la liste selon ta demande
     }
 
     function formatTime(s) {
@@ -184,14 +196,15 @@
     }
 
     function render() {
-        const query = document.getElementById('searchChrono').value.toLowerCase();
+        const query = document.getElementById('searchChrono').value.toLowerCase().trim();
         const filtered = tasks.filter(t => t.name.toLowerCase().includes(query));
         
-        document.getElementById('todayList').innerHTML = filtered.map(t => `
+        const container = document.getElementById('todayList');
+        container.innerHTML = filtered.map(t => `
             <div class="task-item">
                 <div class="task-header">
                     <div class="task-name">${t.name}</div>
-                    <button class="btn-delete" style="border:none; background:none; font-size:1.2rem;" onclick="deleteTask(${t.id})">✕</button>
+                    <button class="btn-delete" style="border:none; background:none; font-size:1.4rem;" onclick="deleteTask(${t.id})">✕</button>
                 </div>
                 <div class="timer-display" id="time-${t.id}">${formatTime(t.elapsed)}</div>
                 <div class="btn-group">
@@ -200,20 +213,23 @@
                     <button class="btn btn-archive" onclick="archiveTask(${t.id})">📂</button>
                 </div>
             </div>
-        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun chrono trouvé.</p>';
+        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
         updateGrandTotal();
     }
 
-    // RECHERCHE AMÉLIORÉE (SENSITIVE)
+    // FONCTION DE RECHERCHE ARCHIVE RENFORCÉE POUR MOBILE
     function filterArchives() {
-        const searchInput = document.getElementById('searchArch');
-        const query = searchInput.value.toLowerCase().trim();
+        const queryField = document.getElementById('searchArch');
+        const query = queryField.value.toLowerCase().trim();
         const container = document.getElementById('archiveContainer');
         
-        const filtered = archives.filter(a => 
-            a.name.toLowerCase().includes(query) || (a.date && a.date.includes(query))
-        );
-        
+        // Filtrage ultra-large (cherche dans nom, date et heure)
+        const filtered = archives.filter(a => {
+            const nameMatch = a.name.toLowerCase().includes(query);
+            const dateMatch = a.date.toLowerCase().includes(query);
+            return nameMatch || dateMatch;
+        });
+
         const groups = filtered.reduce((acc, a) => {
             const day = a.date || "Inconnu";
             if(!acc[day]) acc[day] = [];
@@ -221,7 +237,9 @@
             return acc;
         }, {});
 
-        container.innerHTML = Object.keys(groups).map(day => `
+        const keys = Object.keys(groups);
+        
+        let html = keys.map(day => `
             <div style="margin-bottom:20px;">
                 <div class="day-header">
                     <span>🗓 ${day}</span>
@@ -230,27 +248,24 @@
                 ${groups[day].map(a => `
                     <div class="archive-item">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div class="task-name" style="font-size:1rem;">${a.name}</div>
-                            <div style="font-weight:bold; color:var(--primary);">${formatTime(a.elapsed)}</div>
+                            <div class="task-name" style="font-size:1rem;">${a.name} <br><small style="color:#999;font-weight:normal;">à ${a.time || '--:--'}</small></div>
+                            <div style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${formatTime(a.elapsed)}</div>
                         </div>
-                        <button class="btn-delete" style="width:100%; padding:8px; border-radius:8px; border:1px solid #eee; font-size:0.8rem;" onclick="deleteArch(${a.id})">Supprimer l'archive</button>
+                        <button class="btn-delete" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:0.8rem; margin-top:5px;" onclick="deleteArch(${a.id})">Supprimer l'archive</button>
                     </div>
                 `).join('')}
             </div>
-        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
+        `).join('');
+
+        container.innerHTML = html || '<p style="text-align:center; padding:30px; color:#999;">Aucune archive trouvée.</p>';
     }
 
     function deleteTask(id) { if(confirm("Supprimer ce chrono ?")) { tasks = tasks.filter(x => x.id !== id); save(); render(); } }
     function deleteArch(id) { if(confirm("Supprimer définitivement cette archive ?")) { archives = archives.filter(x => x.id !== id); save(); filterArchives(); } }
     
-    // RESET SANS CONFIRMATION
     function resetTimer(id) { 
         const t = tasks.find(x => x.id === id); 
-        if(t) { 
-            t.elapsed = 0; 
-            if(t.running) { clearInterval(timers[id]); t.running = false; } 
-            save(); render(); 
-        } 
+        if(t) { t.elapsed = 0; if(t.running) { clearInterval(timers[id]); t.running = false; } save(); render(); } 
     }
 
     function exportDayPDF(day) {
@@ -278,6 +293,7 @@
         doc.save("ChronoLab_Historique.pdf");
     }
 
+    // Initialisation
     render();
 </script>
 </body>
