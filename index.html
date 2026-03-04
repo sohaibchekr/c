@@ -1,86 +1,83 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHRONOLAB  Microbiologie created by SOHAIB CHEKRI</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d6efd">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHRONOLAB ⏱ Microbiologie created by SOHAIB CHEKRI</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;color:#333;}
-.container{max-width:900px;margin:0 auto;background:rgba(255,255,255,0.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
-h1{text-align:center;color:#333;margin-bottom:10px;font-size:2em;}
-.date-header{text-align:center;color:#666;margin-bottom:20px;font-size:18px;}
-.section-title{margin-top:30px;margin-bottom:10px;font-weight:600;font-size:18px;}
-.input-section{display:flex;gap:10px;margin-bottom:20px;}
-#taskInput{flex:1;padding:15px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;transition:border-color 0.3s;}
-#taskInput:focus{outline:none;border-color:#667eea;}
-.btn{padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-size:16px;font-weight:600;transition:all 0.3s;}
-.btn-add{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;}
-.btn-add:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4);}
-.task-list,.planning-list,.archive-list{display:flex;flex-direction:column;gap:15px;}
-.task-item,.planning-item,.archive-item{background:#f8f9fa;border-radius:15px;padding:15px;display:flex;align-items:center;gap:10px;border-left:5px solid #667eea;transition:all 0.3s;}
-.task-item:hover,.planning-item:hover,.archive-item:hover{transform:translateX(5px);box-shadow:0 5px 20px rgba(0,0,0,0.1);}
-.task-name{flex:1;font-size:16px;font-weight:500;}
-.timer-display{font-size:20px;font-weight:bold;color:#667eea;font-family:'Courier New',monospace;min-width:80px;text-align:center;}
-.timer-display.running{color:#e74c3c;animation:pulse 1s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
-.btn-timer{padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:600;transition:all 0.3s;}
-.btn-start{background:#27ae60;color:white;}
-.btn-start:hover{background:#229954;}
-.btn-stop{background:#e74c3c;color:white;}
-.btn-stop:hover{background:#c0392b;}
-.btn-reset{background:#f39c12;color:white;}
-.btn-reset:hover{background:#e67e22;}
-.btn-delete{background:#95a5a6;color:white;}
-.btn-delete:hover{background:#7f8c8d;}
-.btn-edit{background:#5dade2;color:white;}
-.btn-edit:hover{background:#3498db;}
-.btn-archive{background:#8e44ad;color:white;}
-.btn-archive:hover{background:#71368a;}
-.summary{margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:15px;color:white;text-align:center;}
-.total-time{font-size:28px;font-weight:bold;margin-top:10px;}
-.export-section{margin-top:20px;display:flex;gap:10px;justify-content:center;}
-.btn-export{background:#34495e;color:white;}
-.btn-export:hover{background:#2c3e50;}
-.footer{margin-top:30px;text-align:center;padding-top:20px;border-top:2px solid #e0e0e0;color:#666;font-size:14px;}
-.footer strong{color:#667eea;font-weight:600;}
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;color:#333;}
+        .container{max-width:900px;margin:0 auto;background:rgba(255,255,255,0.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+        h1{text-align:center;color:#333;margin-bottom:10px;font-size:2em;}
+        .date-header{text-align:center;color:#666;margin-bottom:20px;font-size:18px;}
+        .section-title{margin-top:30px;margin-bottom:10px;font-weight:600;font-size:18px;}
+        .input-section{display:flex;gap:10px;margin-bottom:20px;}
+        #taskInput{flex:1;padding:15px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;transition:border-color 0.3s;}
+        #taskInput:focus{outline:none;border-color:#667eea;}
+        .btn{padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-size:16px;font-weight:600;transition:all 0.3s;}
+        .btn-add{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;}
+        .btn-add:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4);}
+        .task-list,.planning-list,.archive-list{display:flex;flex-direction:column;gap:15px;}
+        .task-item,.planning-item,.archive-item{background:#f8f9fa;border-radius:15px;padding:15px;display:flex;align-items:center;gap:10px;border-left:5px solid #667eea;transition:all 0.3s;}
+        .task-item:hover,.planning-item:hover,.archive-item:hover{transform:translateX(5px);box-shadow:0 5px 20px rgba(0,0,0,0.1);}
+        .task-name{flex:1;font-size:16px;font-weight:500;}
+        .timer-display{font-size:20px;font-weight:bold;color:#667eea;font-family:'Courier New',monospace;min-width:80px;text-align:center;}
+        .timer-display.running{color:#e74c3c;animation:pulse 1s infinite;}
+        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+        .btn-timer{padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:600;transition:all 0.3s;}
+        .btn-start{background:#27ae60;color:white;}
+        .btn-start:hover{background:#229954;}
+        .btn-stop{background:#e74c3c;color:white;}
+        .btn-stop:hover{background:#c0392b;}
+        .btn-reset{background:#f39c12;color:white;}
+        .btn-reset:hover{background:#e67e22;}
+        .btn-delete{background:#95a5a6;color:white;}
+        .btn-delete:hover{background:#7f8c8d;}
+        .btn-edit{background:#5dade2;color:white;}
+        .btn-edit:hover{background:#3498db;}
+        .btn-archive{background:#8e44ad;color:white;}
+        .btn-archive:hover{background:#71368a;}
+        .summary{margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:15px;color:white;text-align:center;}
+        .total-time{font-size:28px;font-weight:bold;margin-top:10px;}
+        .export-section{margin-top:20px;display:flex;gap:10px;justify-content:center;}
+        .btn-export{background:#34495e;color:white;}
+        .btn-export:hover{background:#2c3e50;}
+        .footer{margin-top:30px;text-align:center;padding-top:20px;border-top:2px solid #e0e0e0;color:#666;font-size:14px;}
+        .footer strong{color:#667eea;font-weight:600;}
 
-/* Responsive pour smartphone */
-@media (max-width: 600px) {
-    .container {padding:15px;}
-    h1 {font-size:1.5em;}
-    .input-section {flex-direction:column;gap:10px;}
-    #taskInput {width:100%;}
-    .btn {width:100%;font-size:14px;padding:10px;}
-    .task-item,.planning-item,.archive-item {flex-direction:column;align-items:flex-start;gap:5px;}
-    .timer-display {min-width:auto;text-align:left;}
-    .btn-timer,.btn-edit,.btn-delete,.btn-archive {width:100%;margin-top:5px;}
-    .export-section {flex-direction:column;gap:10px;}
-}
-</style>
+        /* Responsive pour smartphone */
+        @media (max-width: 600px) {
+            .container {padding:15px;}
+            h1 {font-size:1.5em;}
+            .input-section {flex-direction:column;gap:10px;}
+            #taskInput {width:100%;}
+            .btn {width:100%;font-size:14px;padding:10px;}
+            .task-item,.planning-item,.archive-item {flex-direction:column;align-items:flex-start;gap:5px;}
+            .timer-display {min-width:auto;text-align:left;}
+            .btn-timer,.btn-edit,.btn-delete,.btn-archive {width:100%;margin-top:5px;}
+            .export-section {flex-direction:column;gap:10px;}
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1>ChronoLab  Microbiologie</h1>
+    <h1>ChronoLab ⏱ Microbiologie</h1>
     <div class="date-header" id="currentDate"></div>
 
-    <!-- Planning -->
-    <div class="section-title"> Planning</div>
+    <div class="section-title">📋 Planning</div>
     <div id="planningList" class="planning-list"></div>
 
-    <!-- Ce jour -->
-    <div class="section-title"> Ce jour</div>
+    <div class="section-title">🗓 Aujourd’hui</div>
     <div class="input-section">
-        <input type="text" id="taskInput" placeholder="Nouvelle tache..." onkeypress="if(event.key==='Enter') addTask()">
+        <input type="text" id="taskInput" placeholder="Nouvelle tâche..." onkeypress="if(event.key==='Enter') addTask()">
         <button class="btn btn-add" onclick="addTask()">+ Ajouter</button>
     </div>
     <div id="todayList" class="task-list"></div>
 
-    <!-- Archives -->
-    <div class="section-title">Archives</div>
+    <div class="section-title">🗃 Archives</div>
     <div id="archiveList" class="archive-list"></div>
 
     <div class="summary">
@@ -89,11 +86,11 @@ h1{text-align:center;color:#333;margin-bottom:10px;font-size:2em;}
     </div>
 
     <div class="export-section">
-        <button class="btn btn-export" onclick="exportCSV()"> Export EXCEL</button>
-        <button class="btn btn-export" onclick="exportPDF()"> Export PDF</button>
+        <button class="btn btn-export" onclick="exportCSV()">📊 Export EXCEL</button>
+        <button class="btn btn-export" onclick="exportPDF()">📄 Export PDF</button>
     </div>
 
-    <div class="footer">Created by <strong>SOHAIB CHEKRI</strong> |  2026</div>
+    <div class="footer">Created by <strong>SOHAIB CHEKRI</strong> | © 2026</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -123,41 +120,37 @@ function syncPlanningToToday(){
 }
 
 function render(){
-    // Planning
     document.getElementById('planningList').innerHTML = planning.map((t,i)=>`
         <div class="planning-item">
             <div class="task-name">${t.name}</div>
-            <button class="btn-edit" onclick="editPlanning(${i})"> Modifier</button>
+            <button class="btn-edit" onclick="editPlanning(${i})">✎ Modifier</button>
             <button class="btn-delete" onclick="planning.splice(${i},1);syncPlanningToToday();save();render()">Supprimer</button>
         </div>
     `).join('');
 
-    // Aujourd�hui
     document.getElementById('todayList').innerHTML = todayTasks.map((t,i)=>`
         <div class="task-item">
             <div class="task-name">${t.name}</div>
             <div class="timer-display ${t.running?'running':''}" id="time-${i}">${formatTime(t.elapsed)}</div>
-            <button class="btn-timer ${t.running?'btn-stop':'btn-start'}" onclick="toggleTimer(${i})">${t.running?' Stop':' Start'}</button>
-            <button class="btn-timer btn-reset" onclick="resetTimer(${i})"> Reset</button>
-            <button class="btn-edit" onclick="editTask(${i})"> Modifier</button>
-            <button class="btn-archive" onclick="archiveTask(${i})">Archiver</button>
-            <button class="btn-delete" onclick="deleteTask(${i})"></button>
+            <button class="btn-timer ${t.running?'btn-stop':'btn-start'}" onclick="toggleTimer(${i})">${t.running?'⏹ Stop':'▶ Start'}</button>
+            <button class="btn-timer btn-reset" onclick="resetTimer(${i})">↺ Reset</button>
+            <button class="btn-edit" onclick="editTask(${i})">✎ Modifier</button>
+            <button class="btn-archive" onclick="archiveTask(${i})">📂 Archiver</button>
+            <button class="btn-delete" onclick="deleteTask(${i})">✕</button>
         </div>
     `).join('');
 
-    // Archives
     document.getElementById('archiveList').innerHTML = archives.map((a,i)=>`
         <div class="archive-item">
             <div class="task-name">${a.name} - ${formatDate(new Date(a.date))} (${formatTime(a.elapsed)})</div>
-            <button class="btn-edit" onclick="editArchive(${i})"> Modifier</button>
-            <button class="btn-delete" onclick="archives.splice(${i},1);save();render()"> Supprimer</button>
+            <button class="btn-edit" onclick="editArchive(${i})">✎ Modifier</button>
+            <button class="btn-delete" onclick="archives.splice(${i},1);save();render()">✕ Supprimer</button>
         </div>
     `).join('');
 
     updateTotalOnly();
 }
 
-// Chronom�tre stable
 function formatTime(s){
     const m=Math.floor(s/60);
     const sec=s%60;
@@ -200,20 +193,16 @@ function updateTotalOnly(){
     document.getElementById('totalTime').textContent=formatTime(total);
 }
 
-// Gestion t�ches
 function addTask(){let n=document.getElementById('taskInput').value.trim();if(!n)return;todayTasks.push({name:n,elapsed:0,running:false,startTime:null});document.getElementById('taskInput').value='';syncPlanningToToday();save();render();}
 function deleteTask(i){if(todayTasks[i].running){clearInterval(timers[i]);delete timers[i];}todayTasks.splice(i,1);save();render();}
-function editTask(i){let n=prompt('Modifier le nom de la t�che',todayTasks[i].name);if(n){todayTasks[i].name=n;syncPlanningToToday();save();render();}}
+function editTask(i){let n=prompt('Modifier le nom de la tâche',todayTasks[i].name);if(n){todayTasks[i].name=n;syncPlanningToToday();save();render();}}
 function archiveTask(i){archives.push({...todayTasks[i],date:Date.now()});save();render();}
+function editPlanning(i){let n=prompt('Modifier le nom de la tâche',planning[i].name);if(n){planning[i].name=n;syncPlanningToToday();save();render();}}
+function editArchive(i){let n=prompt('Modifier le nom de la tâche',archives[i].name);if(n){archives[i].name=n;save();render();}}
 
-// Modifier planning et archives
-function editPlanning(i){let n=prompt('Modifier le nom de la t�che',planning[i].name);if(n){planning[i].name=n;syncPlanningToToday();save();render();}}
-function editArchive(i){let n=prompt('Modifier le nom de la t�che',archives[i].name);if(n){archives[i].name=n;save();render();}}
-
-// Export CSV
 function exportCSV(){
-    if(todayTasks.length===0){alert('Aucune t�che � exporter');return;}
-    let csv='Date,T�che,Dur�e (minutes),Dur�e (HH:MM)\n';
+    if(todayTasks.length===0){alert('Aucune tâche à exporter');return;}
+    let csv='Date,Tâche,Durée (minutes),Durée (HH:MM)\n';
     const date=formatDate(new Date());
     todayTasks.forEach(t=>{const s=t.elapsed+(t.running?Math.floor((Date.now()-t.startTime)/1000):0);csv+=`${date},"${t.name}",${Math.ceil(s/60)},${formatTime(s)}\n`;});
     const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
@@ -223,9 +212,8 @@ function exportCSV(){
     link.click();
 }
 
-// Export PDF
 function exportPDF(){
-    if(todayTasks.length===0){alert('Aucune t�che � exporter');return;}
+    if(todayTasks.length===0){alert('Aucune tâche à exporter');return;}
     const { jsPDF } = window.jspdf;
     const doc=new jsPDF();
     doc.setFontSize(16);doc.text("ChronoLab Microbiologie",10,10);
@@ -239,10 +227,19 @@ function exportPDF(){
     doc.save(`chrono-lab-${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-// Date actuelle
+// Initialisation
 document.getElementById('currentDate').textContent=formatDate(new Date());
 syncPlanningToToday();
 render();
+
+// --- ACTIVATION DU MODE HORS-LIGNE ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('ChronoLab : Mode hors-ligne activé !'))
+            .catch(err => console.log('Erreur Service Worker :', err));
+    });
+}
 </script>
 </body>
 </html>
