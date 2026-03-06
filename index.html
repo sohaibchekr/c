@@ -86,7 +86,7 @@
     <div id="archives" class="tab-content">
         <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..." oninput="filterArchives()">
         <div id="archiveContainer"></div>
-        <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;" onclick="exportFullPDF()">📄 EXPORTER RAPPORT COMPLET (PDF)</button>
+        <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;" onclick="exportFullPDF()">📄 EXPORTER LA SÉLECTION (PDF)</button>
     </div>
 
     <div class="footer">
@@ -200,25 +200,25 @@
         updateGrandTotal();
     }
 
-    // FONCTION CORRIGÉE : RECHERCHE ARCHIVES
-    function filterArchives() {
+    // FONCTION POUR RÉCUPÉRER LES DONNÉES FILTRÉES ACTUELLES
+    function getFilteredArchives() {
         const query = document.getElementById('searchArch').value.toLowerCase().trim();
-        const container = document.getElementById('archiveContainer');
-        
-        // On vide d'abord le container pour éviter que les anciennes dates restent affichées
-        container.innerHTML = "";
-
-        // On filtre les données
-        const filtered = archives.filter(a => 
+        return archives.filter(a => 
             a.name.toLowerCase().includes(query) || (a.date && a.date.includes(query))
         );
+    }
+
+    function filterArchives() {
+        const container = document.getElementById('archiveContainer');
+        container.innerHTML = "";
+
+        const filtered = getFilteredArchives();
 
         if (filtered.length === 0) {
             container.innerHTML = '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
             return;
         }
 
-        // On groupe par date
         const groups = filtered.reduce((acc, a) => {
             const day = a.date || "Inconnu";
             if(!acc[day]) acc[day] = [];
@@ -226,7 +226,6 @@
             return acc;
         }, {});
 
-        // On génère le HTML final
         container.innerHTML = Object.keys(groups).map(day => `
             <div style="margin-bottom:20px;">
                 <div class="day-header">
@@ -263,7 +262,9 @@
         const doc = new jsPDF();
         doc.text(`CHRONOLAB - Rapport du ${day}`, 15, 20);
         let y = 35;
-        archives.filter(a => a.date === day).forEach((a, i) => {
+        // On exporte uniquement ce qui est visible pour ce jour précis
+        const currentSearch = document.getElementById('searchArch').value.toLowerCase();
+        archives.filter(a => a.date === day && a.name.toLowerCase().includes(currentSearch)).forEach((a, i) => {
             doc.text(`${i+1}. ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
             y += 10;
         });
@@ -273,14 +274,17 @@
     function exportFullPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("CHRONOLAB - RAPPORT COMPLET", 15, 20);
+        const filtered = getFilteredArchives(); // RÉCUPÈRE UNIQUEMENT LES RÉSULTATS DE LA RECHERCHE
+        
+        doc.text("CHRONOLAB - RAPPORT SÉLECTIONNÉ", 15, 20);
         let y = 35;
-        archives.forEach(a => {
+        
+        filtered.forEach(a => {
             doc.text(`${a.date} | ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
             y += 10;
             if(y > 280) { doc.addPage(); y = 20; }
         });
-        doc.save("ChronoLab_Historique.pdf");
+        doc.save("ChronoLab_Selection.pdf");
     }
 
     render();
