@@ -1,293 +1,636 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CHRONOLAB ⏱ - SOHAIB CHEKRI</title>
     <style>
-        :root { --primary: #667eea; --secondary: #764ba2; --success: #27ae60; --danger: #e74c3c; --warning: #f39c12; --info: #3498db; }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family:'Segoe UI', sans-serif; background: linear-gradient(135deg, var(--primary), var(--secondary)); min-height: 100vh; padding: 10px; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; padding: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        h2 { text-align:center; margin-bottom:15px; font-size: 1.6rem; color: #2c3e50; }
-        
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f0f0f0; padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; background: transparent; font-size: 1rem; }
-        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .input-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; appearance: none; }
-        input[type="text"]:focus { border-color: var(--primary); background: #f9f9ff; }
-        
-        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; font-size: 14px; background: #fafafa; }
-
-        .btn-add-main { background: var(--success); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-
-        .task-item, .archive-item { 
-            padding: 18px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 12px;
-            display: flex; flex-direction: column; gap: 12px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
         }
-        
-        .task-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .task-name { font-weight: bold; font-size: 1.1rem; color: #34495e; flex: 1; text-transform: uppercase; }
-        .timer-display { font-family: 'Courier New', monospace; font-size: 1.8rem; font-weight: 800; color: var(--primary); text-align: center; }
 
-        .btn-group { display: flex; gap: 10px; }
-        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        
-        .btn-start { background: var(--success); }
-        .btn-stop { background: var(--danger); }
-        .btn-reset { background: var(--warning); }
-        .btn-archive { background: var(--secondary); }
-        .btn-delete { background: #eaeff2; color: #7f8c8d; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .day-header { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
-        
-        .total-box { margin-top: 20px; padding: 20px; background: #f4f7fe; border-radius: 15px; text-align: center; border: 2px dashed var(--primary); }
-        .total-val { font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
 
-        .footer { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #7f8c8d; padding-bottom: 20px; }
-        .signature { color: var(--primary); font-weight: bold; display: block; margin-top: 8px; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            color: #2c3e50;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            background: transparent;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            outline: none;
+            font-size: 16px;
+            appearance: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            background: #f9f9ff;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            background: #fafafa;
+        }
+
+        .btn-add-main {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .task-item,
+        .archive-item {
+            padding: 18px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .task-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item.drag-over {
+            border-top: 3px solid var(--primary);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .task-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #34495e;
+            flex: 1;
+            text-transform: uppercase;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .timer-display:hover {
+            color: var(--secondary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .btn-start {
+            background: var(--success);
+        }
+
+        .btn-stop {
+            background: var(--danger);
+        }
+
+        .btn-reset {
+            background: var(--warning);
+        }
+
+        .btn-archive {
+            background: var(--secondary);
+        }
+
+        .btn-delete {
+            background: #eaeff2;
+            color: #7f8c8d;
+        }
+
+        .day-header {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary);
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f4f7fe;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed var(--primary);
+        }
+
+        .total-val {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            padding-bottom: 20px;
+        }
+
+        .signature {
+            color: var(--primary);
+            font-weight: bold;
+            display: block;
+            margin-top: 8px;
+        }
 
         @media (min-width: 600px) {
-            .input-section { flex-direction: row; }
-            .task-item { flex-direction: row; align-items: center; }
-            .btn-group { width: auto; }
-            .btn { width: 50px; flex: none; }
+            .input-section {
+                flex-direction: row;
+            }
+
+            .task-item {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .btn-group {
+                width: auto;
+            }
+
+            .btn {
+                width: 50px;
+                flex: none;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>ChronoLab ⏱</h2>
+    <div class="container">
+        <h2>ChronoLab ⏱</h2>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('chrono', event)">⏱ Chronos</button>
-        <button class="tab-btn" onclick="openTab('archives', event)">🗃 Archives</button>
-    </div>
-
-    <div id="chrono" class="tab-content active">
-        <div class="input-section">
-            <input type="text" id="taskInput" placeholder="Nouvelle manipulation...">
-            <button class="btn-add-main" onclick="addTask()">+ Ajouter</button>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('chrono', event)">⏱ Chronos</button>
+            <button class="tab-btn" onclick="openTab('archives', event)">🗃 Archives</button>
         </div>
-        <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos en cours..." oninput="render()">
-        <div id="todayList"></div>
-        <div class="total-box">
-            <div style="font-weight: bold; margin-bottom: 5px;">TEMPS TOTAL</div>
-            <div class="total-val" id="grandTotal">00:00</div>
-        </div>
-    </div>
 
-    <div id="archives" class="tab-content">
-        <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..." oninput="filterArchives()">
-        <div id="archiveContainer"></div>
-        <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;" onclick="exportFullPDF()">📄 EXPORTER LA SÉLECTION (PDF)</button>
-    </div>
-
-    <div class="footer">
-        © 2026 ChronoLab Microbiologie
-        <span class="signature">CREATED BY SOHAIB CHEKRI</span>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    let archives = JSON.parse(localStorage.getItem('archives') || '[]');
-    let timers = {};
-
-    function save() {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        localStorage.setItem('archives', JSON.stringify(archives));
-    }
-
-    function openTab(id, event) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(event) event.currentTarget.classList.add('active');
-        if(id === 'archives') filterArchives(); 
-        else render();
-    }
-
-    function addTask() {
-        const val = document.getElementById('taskInput').value.trim();
-        if(!val) return;
-        tasks.push({ id: Date.now(), name: val, elapsed: 0, running: false });
-        document.getElementById('taskInput').value = '';
-        save(); render();
-    }
-
-    function toggleTimer(id) {
-        const t = tasks.find(x => x.id === id);
-        if(!t) return;
-        if(t.running) {
-            t.running = false;
-            t.elapsed += Math.floor((Date.now() - t.startTime) / 1000);
-            clearInterval(timers[id]);
-        } else {
-            t.running = true;
-            t.startTime = Date.now();
-            timers[id] = setInterval(() => {
-                const current = t.elapsed + Math.floor((Date.now() - t.startTime) / 1000);
-                const el = document.getElementById('time-' + id);
-                if(el) el.innerText = formatTime(current);
-                updateGrandTotal();
-            }, 1000);
-        }
-        save(); render();
-    }
-
-    function archiveTask(id) {
-        const t = tasks.find(x => x.id === id);
-        if(!t) return;
-        const finalSec = t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
-        const now = new Date();
-        archives.unshift({
-            id: Date.now(),
-            name: t.name,
-            elapsed: finalSec,
-            date: now.toLocaleDateString('fr-FR'),
-            time: now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})
-        });
-        
-        const btn = event.currentTarget;
-        btn.style.background = "#27ae60";
-        setTimeout(() => { btn.style.background = ""; }, 500);
-        save();
-    }
-
-    function formatTime(s) {
-        const h = Math.floor(s / 3600);
-        const m = Math.floor((s % 3600) / 60);
-        const sec = s % 60;
-        if(h > 0) return `${h}h ${m}m`;
-        return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-    }
-
-    function updateGrandTotal() {
-        let total = 0;
-        tasks.forEach(t => {
-            total += t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
-        });
-        const el = document.getElementById('grandTotal');
-        if(el) el.innerText = formatTime(total);
-    }
-
-    function render() {
-        const query = document.getElementById('searchChrono').value.toLowerCase();
-        const filtered = tasks.filter(t => t.name.toLowerCase().includes(query));
-        
-        document.getElementById('todayList').innerHTML = filtered.map(t => `
-            <div class="task-item">
-                <div class="task-header">
-                    <div class="task-name">${t.name}</div>
-                    <button class="btn-delete" style="border:none; background:none; font-size:1.2rem;" onclick="deleteTask(${t.id})">✕</button>
-                </div>
-                <div class="timer-display" id="time-${t.id}">${formatTime(t.elapsed)}</div>
-                <div class="btn-group">
-                    <button class="btn ${t.running?'btn-stop':'btn-start'}" onclick="toggleTimer(${t.id})">${t.running?'⏹':'▶'}</button>
-                    <button class="btn btn-reset" onclick="resetTimer(${t.id})">↻</button>
-                    <button class="btn btn-archive" onclick="archiveTask(${t.id})">📂</button>
-                </div>
+        <div id="chrono" class="tab-content active">
+            <div class="input-section">
+                <input type="text" id="taskInput" placeholder="Nouvelle manipulation...">
+                <button class="btn-add-main" onclick="addTask()">+ Ajouter</button>
             </div>
-        `).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun chrono trouvé.</p>';
-        updateGrandTotal();
-    }
+            <input type="text" id="searchChrono" class="search-bar" placeholder="🔍 Filtrer les chronos en cours..."
+                oninput="render()">
+            <div id="todayList"></div>
+            <div class="total-box">
+                <div style="font-weight: bold; margin-bottom: 5px;">TEMPS TOTAL</div>
+                <div class="total-val" id="grandTotal">00:00</div>
+            </div>
+        </div>
 
-    // FONCTION POUR RÉCUPÉRER LES DONNÉES FILTRÉES ACTUELLES
-    function getFilteredArchives() {
-        const query = document.getElementById('searchArch').value.toLowerCase().trim();
-        return archives.filter(a => 
-            a.name.toLowerCase().includes(query) || (a.date && a.date.includes(query))
-        );
-    }
+        <div id="archives" class="tab-content">
+            <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..."
+                oninput="filterArchives()">
+            <div id="archiveContainer"></div>
+            <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;"
+                onclick="exportFullPDF()">📄 EXPORTER LA SÉLECTION (PDF)</button>
+        </div>
 
-    function filterArchives() {
-        const container = document.getElementById('archiveContainer');
-        container.innerHTML = "";
+        <div class="footer">
+            © 2026 ChronoLab Microbiologie
+            <span class="signature">CREATED BY SOHAIB CHEKRI</span>
+            <div style="margin-top: 15px;">
+                <a href="https://wa.me/213675758220" target="_blank"
+                    style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; background: #25D366; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"
+                    title="Contacter sur WhatsApp">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                    </svg>
+                    +213675758220
+                </a>
+            </div>
+        </div>
+    </div>
 
-        const filtered = getFilteredArchives();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        let archives = JSON.parse(localStorage.getItem('archives') || '[]');
+        let timers = {};
 
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
-            return;
+        let draggedTaskId = null;
+
+        function save() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('archives', JSON.stringify(archives));
         }
 
-        const groups = filtered.reduce((acc, a) => {
-            const day = a.date || "Inconnu";
-            if(!acc[day]) acc[day] = [];
-            acc[day].push(a);
-            return acc;
-        }, {});
+        function openTab(id, event) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (event) event.currentTarget.classList.add('active');
+            if (id === 'archives') filterArchives();
+            else render();
+        }
 
-        container.innerHTML = Object.keys(groups).map(day => `
-            <div style="margin-bottom:20px;">
-                <div class="day-header">
-                    <span>🗓 ${day}</span>
-                    <button onclick="exportDayPDF('${day}')" style="border:none; background:#ddd; padding:4px 8px; border-radius:5px; font-size:10px;">PDF</button>
-                </div>
-                ${groups[day].map(a => `
-                    <div class="archive-item">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div class="task-name" style="font-size:1rem;">${a.name}</div>
-                            <div style="font-weight:bold; color:var(--primary);">${formatTime(a.elapsed)}</div>
-                        </div>
-                        <button class="btn-delete" style="width:100%; padding:8px; border-radius:8px; border:1px solid #eee; font-size:0.8rem;" onclick="deleteArch(${a.id})">Supprimer l'archive</button>
-                    </div>
-                `).join('')}
-            </div>
-        `).join('');
-    }
+        function addTask() {
+            const val = document.getElementById('taskInput').value.trim();
+            if (!val) return;
+            tasks.push({ id: Date.now(), name: val, elapsed: 0, running: false });
+            document.getElementById('taskInput').value = '';
+            save(); render();
+        }
 
-    function deleteTask(id) { if(confirm("Supprimer ce chrono ?")) { tasks = tasks.filter(x => x.id !== id); save(); render(); } }
-    function deleteArch(id) { if(confirm("Supprimer définitivement cette archive ?")) { archives = archives.filter(x => x.id !== id); save(); filterArchives(); } }
-    
-    function resetTimer(id) { 
-        const t = tasks.find(x => x.id === id); 
-        if(t) { 
-            t.elapsed = 0; 
-            if(t.running) { clearInterval(timers[id]); t.running = false; } 
-            save(); render(); 
-        } 
-    }
+        function toggleTimer(id) {
+            const t = tasks.find(x => x.id === id);
+            if (!t) return;
+            if (t.running) {
+                t.running = false;
+                t.elapsed += Math.floor((Date.now() - t.startTime) / 1000);
+                clearInterval(timers[id]);
+            } else {
+                t.running = true;
+                t.startTime = Date.now();
+                timers[id] = setInterval(() => {
+                    const current = t.elapsed + Math.floor((Date.now() - t.startTime) / 1000);
+                    const el = document.getElementById('time-' + id);
+                    if (el) el.innerText = formatTime(current);
+                    updateGrandTotal();
+                }, 1000);
+            }
+            save(); render();
+        }
 
-    function exportDayPDF(day) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text(`CHRONOLAB - Rapport du ${day}`, 15, 20);
-        let y = 35;
-        // On exporte uniquement ce qui est visible pour ce jour précis
-        const currentSearch = document.getElementById('searchArch').value.toLowerCase();
-        archives.filter(a => a.date === day && a.name.toLowerCase().includes(currentSearch)).forEach((a, i) => {
-            doc.text(`${i+1}. ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
-            y += 10;
-        });
-        doc.save(`ChronoLab_${day}.pdf`);
-    }
+        function archiveTask(id) {
+            const t = tasks.find(x => x.id === id);
+            if (!t) return;
+            const finalSec = t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
+            const now = new Date();
+            archives.unshift({
+                id: Date.now(),
+                name: t.name,
+                elapsed: finalSec,
+                date: now.toLocaleDateString('fr-FR'),
+                time: now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+            });
 
-    function exportFullPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const filtered = getFilteredArchives(); // RÉCUPÈRE UNIQUEMENT LES RÉSULTATS DE LA RECHERCHE
-        
-        doc.text("CHRONOLAB - RAPPORT SÉLECTIONNÉ", 15, 20);
-        let y = 35;
-        
-        filtered.forEach(a => {
-            doc.text(`${a.date} | ${a.name} : ${formatTime(a.elapsed)}`, 15, y);
-            y += 10;
-            if(y > 280) { doc.addPage(); y = 20; }
-        });
-        doc.save("ChronoLab_Selection.pdf");
-    }
+            const btn = event.currentTarget;
+            btn.style.background = "#27ae60";
+            setTimeout(() => { btn.style.background = ""; }, 500);
+            save();
+        }
 
-    render();
-</script>
+        function formatTime(s) {
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            if (h > 0) return `${h}h ${m}m`;
+            return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function updateGrandTotal() {
+            let total = 0;
+            tasks.forEach(t => {
+                total += t.elapsed + (t.running ? Math.floor((Date.now() - t.startTime) / 1000) : 0);
+            });
+            const el = document.getElementById('grandTotal');
+            if (el) el.innerText = formatTime(total);
+        }
+
+        function render() {
+            const query = document.getElementById('searchChrono').value.toLowerCase();
+            const filtered = tasks.filter(t => t.name.toLowerCase().includes(query));
+
+            document.getElementById('todayList').innerHTML = filtered.map(t =>
+                '<div class="task-item" draggable="true" ondragstart="handleDragStart(event, ' + t.id + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + t.id + ')" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondragend="handleDragEnd(event)">' +
+                '<div class="task-header">' +
+                '<div style="cursor: grab;" class="task-name">☰ ' + t.name + '</div>' +
+                '<button class="btn-delete" style="border:none; background:none; font-size:1.2rem;" onclick="deleteTask(' + t.id + ')">✕</button>' +
+                '</div>' +
+                '<div class="timer-display" id="time-' + t.id + '" onclick="editTime(' + t.id + ')" title="Cliquez pour modifier le temps">' + formatTime(t.elapsed) + '</div>' +
+                '<div class="btn-group">' +
+                '<button class="btn ' + (t.running ? 'btn-stop' : 'btn-start') + '" onclick="toggleTimer(' + t.id + ')">' + (t.running ? '⏹' : '▶') + '</button>' +
+                '<button class="btn btn-reset" onclick="resetTimer(' + t.id + ')">↻</button>' +
+                '<button class="btn btn-archive" onclick="archiveTask(' + t.id + ')">📂</button>' +
+                '</div>' +
+                '</div>'
+            ).join('') || '<p style="text-align:center; padding:20px; color:#999;">Aucun chrono trouvé.</p>';
+            updateGrandTotal();
+        }
+
+        // --- Drag and Drop Logic --- //
+        function handleDragStart(e, id) {
+            draggedTaskId = id;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            const item = e.target.closest('.task-item');
+            if (item && item !== document.querySelector('.dragging')) {
+                item.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const item = e.target.closest('.task-item');
+            if (item) {
+                item.classList.remove('drag-over');
+            }
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.task-item').forEach(el => el.classList.remove('drag-over'));
+            draggedTaskId = null;
+        }
+
+        function handleDrop(e, targetId) {
+            e.preventDefault();
+            const item = e.target.closest('.task-item');
+            if (item) {
+                item.classList.remove('drag-over');
+            }
+            if (!draggedTaskId || draggedTaskId === targetId) return;
+
+            const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
+            const targetIndex = tasks.findIndex(t => t.id === targetId);
+
+            if (draggedIndex !== -1 && targetIndex !== -1) {
+                // Remove dragged item
+                const [movedTask] = tasks.splice(draggedIndex, 1);
+                // Insert at target index
+                tasks.splice(targetIndex, 0, movedTask);
+                save();
+                render();
+            }
+        }
+
+        // --- Manual Time Editing --- //
+        function editTime(id) {
+            const t = tasks.find(x => x.id === id);
+            if (!t) return;
+
+            const wasRunning = t.running;
+            if (wasRunning) {
+                toggleTimer(id); // Stop the timer temporarily to allow editing cleanly
+            }
+
+            const currentMins = Math.floor(t.elapsed / 60);
+            const input = prompt("Modifier le temps écoulé pour \"" + t.name + "\" (en minutes) :", currentMins);
+
+            if (input !== null && input !== "") {
+                const newMins = parseInt(input, 10);
+                if (!isNaN(newMins) && newMins >= 0) {
+                    t.elapsed = newMins * 60;
+                    save();
+                    render();
+                } else {
+                    alert('Veuillez entrer un nombre valide de minutes.');
+                }
+            }
+
+            if (wasRunning && input !== null && !isNaN(parseInt(input, 10))) {
+                toggleTimer(id); // Restart it if it was running and they successfully edited
+            } else if (wasRunning) {
+                toggleTimer(id); // Restart if they cancelled
+            }
+        }
+
+        // FONCTION POUR RÉCUPÉRER LES DONNÉES FILTRÉES ACTUELLES
+        function getFilteredArchives() {
+            const query = document.getElementById('searchArch').value.toLowerCase().trim();
+            return archives.filter(a =>
+                a.name.toLowerCase().includes(query) || (a.date && a.date.includes(query))
+            );
+        }
+
+        function filterArchives() {
+            const container = document.getElementById('archiveContainer');
+            container.innerHTML = "";
+
+            const filtered = getFilteredArchives();
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; color:#999;">Aucun résultat.</p>';
+                return;
+            }
+
+            const groups = filtered.reduce((acc, a) => {
+                const day = a.date || "Inconnu";
+                if (!acc[day]) acc[day] = [];
+                acc[day].push(a);
+                return acc;
+            }, {});
+
+            container.innerHTML = Object.keys(groups).map(day =>
+                '<div style="margin-bottom:20px;">' +
+                '<div class="day-header">' +
+                '<span>🗓 ' + day + '</span>' +
+                '<button onclick="exportDayPDF(\'' + day + '\')" style="border:none; background:#ddd; padding:4px 8px; border-radius:5px; font-size:10px;">PDF</button>' +
+                '</div>' +
+                groups[day].map(a =>
+                    '<div class="archive-item">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<div class="task-name" style="font-size:1rem;">' + a.name + '</div>' +
+                    '<div style="font-weight:bold; color:var(--primary); cursor:pointer;" onclick="editArchTime(' + a.id + ')" title="Cliquez pour modifier le temps">' + formatTime(a.elapsed) + '</div>' +
+                    '</div>' +
+                    '<button class="btn-delete" style="width:100%; padding:8px; border-radius:8px; border:1px solid #eee; font-size:0.8rem;" onclick="deleteArch(' + a.id + ')">Supprimer l\'archive</button>' +
+                    '</div>'
+                ).join('') +
+                '</div>'
+            ).join('');
+        }
+
+        function deleteTask(id) { if (confirm("Supprimer ce chrono ?")) { tasks = tasks.filter(x => x.id !== id); save(); render(); } }
+        function deleteArch(id) { if (confirm("Supprimer définitivement cette archive ?")) { archives = archives.filter(x => x.id !== id); save(); filterArchives(); } }
+
+        function editArchTime(id) {
+            const a = archives.find(x => x.id === id);
+            if (!a) return;
+
+            const currentMins = Math.floor(a.elapsed / 60);
+            const input = prompt("Modifier le temps écoulé pour l'archive \"" + a.name + "\" (en minutes) :", currentMins);
+
+            if (input !== null && input !== "") {
+                const newMins = parseInt(input, 10);
+                if (!isNaN(newMins) && newMins >= 0) {
+                    a.elapsed = newMins * 60;
+                    save();
+                    filterArchives();
+                } else {
+                    alert('Veuillez entrer un nombre valide de minutes.');
+                }
+            }
+        }
+
+        function resetTimer(id) {
+            const t = tasks.find(x => x.id === id);
+            if (t) {
+                t.elapsed = 0;
+                if (t.running) { clearInterval(timers[id]); t.running = false; }
+                save(); render();
+            }
+        }
+
+        function exportDayPDF(day) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("CHRONOLAB - Rapport du " + day, 15, 20);
+            let y = 35;
+            // On exporte uniquement ce qui est visible pour ce jour précis
+            const currentSearch = document.getElementById('searchArch').value.toLowerCase();
+            archives.filter(a => a.date === day && a.name.toLowerCase().includes(currentSearch)).forEach((a, i) => {
+                doc.text((i + 1) + ". " + a.name + " : " + formatTime(a.elapsed), 15, y);
+                y += 10;
+            });
+            doc.save("ChronoLab_" + day + ".pdf");
+        }
+
+        function exportFullPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const filtered = getFilteredArchives(); // RÉCUPÈRE UNIQUEMENT LES RÉSULTATS DE LA RECHERCHE
+
+            doc.text("CHRONOLAB - RAPPORT SÉLECTIONNÉ", 15, 20);
+            let y = 35;
+
+            filtered.forEach(a => {
+                doc.text(a.date + " | " + a.name + " : " + formatTime(a.elapsed), 15, y);
+                y += 10;
+                if (y > 280) { doc.addPage(); y = 20; }
+            });
+            doc.save("ChronoLab_Selection.pdf");
+        }
+
+        render();
+    </script>
 </body>
+
 </html>
