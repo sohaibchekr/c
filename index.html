@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CHRONOLAB ⏱ - SOHAIB CHEKRI</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ChronoLab">
+    <link rel="apple-touch-icon" href="logo.png">
     <style>
         :root {
             --primary: #667eea;
@@ -307,9 +312,16 @@
         <div id="archives" class="tab-content">
             <input type="text" id="searchArch" class="search-bar" placeholder="🔍 Rechercher dans l'historique..."
                 oninput="filterArchives()">
+
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                <button class="btn" style="background: #2c3e50; font-size: 0.8rem; margin:0; flex: 1;" onclick="exportFullPDF()">📄 PDF</button>
+                <button class="btn" style="background: #34495e; font-size: 0.8rem; margin:0; flex: 1;" onclick="exportDataJSON()">📥 BACKUP</button>
+                <button class="btn" style="background: #27ae60; font-size: 0.8rem; margin:0; flex: 1;" id="shareBtn" onclick="shareBackup()" style="display:none">📤 PARTAGER</button>
+                <button class="btn" style="background: #7f8c8d; font-size: 0.8rem; margin:0; flex: 1;" onclick="importDataJSON()">💾 RESTORE</button>
+            </div>
+
             <div id="archiveContainer"></div>
-            <button class="btn" style="background: #2c3e50; width: 100%; margin-top: 15px; font-size: 0.9rem;"
-                onclick="exportFullPDF()">📄 EXPORTER LA SÉLECTION (PDF)</button>
+            <input type="file" id="importFile" style="display:none" onchange="handleFileImport(event)" accept=".json">
         </div>
 
         <div class="footer">
@@ -627,6 +639,95 @@
                 if (y > 280) { doc.addPage(); y = 20; }
             });
             doc.save("ChronoLab_Selection.pdf");
+        }
+
+        function exportDataJSON() {
+            const data = { tasks, archives, version: "1.2", date: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ChronoLab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert("Sauvegarde JSON réussie ! Gardez ce fichier précieusement.");
+        }
+
+        function importDataJSON() {
+            if (confirm("Attention : l'importation de données remplacera vos chronos et archives actuels. Continuer ?")) {
+                document.getElementById('importFile').click();
+            }
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.tasks && data.archives) {
+                        tasks = data.tasks;
+                        archives = data.archives;
+                        save();
+                        render();
+                        filterArchives();
+                        alert("Données restaurées avec succès !");
+                    } else {
+                        alert("Format de fichier invalide.");
+                    }
+                } catch (err) {
+                    alert("Erreur lors de la lecture du fichier : " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Vérification du stockage au démarrage
+        try {
+            localStorage.setItem('test', '1');
+            localStorage.removeItem('test');
+        } catch (e) {
+            alert("ATTENTION : Le stockage local ne semble pas disponible sur ce navigateur. Vos données pourraient être perdues à la fermeture. Vérifiez que vous n'êtes pas en navigation privée.");
+        }
+
+        async function shareBackup() {
+            const data = { tasks, archives, version: "1.2", date: new Date().toISOString() };
+            const json = JSON.stringify(data, null, 2);
+            
+            try {
+                const file = new File([json], `ChronoLab_Backup_${new Date().toISOString().split('T')[0]}.json`, { type: 'application/json' });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Sauvegarde ChronoLab',
+                        text: 'Restaurer mes chronos'
+                    });
+                } else {
+                    alert("Le partage de fichiers n'est pas supporté. Téléchargez le fichier avec BACKUP.");
+                }
+            } catch (err) {
+                if (err.name !== "AbortError") alert("Erreur : " + err.message);
+            }
+        }
+
+        // Mode persistant pour mobile
+        if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist().then(persistent => {
+                if (!persistent) console.warn("Le stockage n'est pas persistant. Android/iOS pourrait le supprimer.");
+            });
+        }
+
+        // Afficher le bouton partager si possible
+        if (navigator.share) {
+            const sb = document.getElementById('shareBtn');
+            if(sb) sb.style.display = 'inline-block';
+        }
+
+        // Enregistrement Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
         }
 
         render();
